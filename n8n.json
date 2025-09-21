@@ -1,0 +1,122 @@
+{
+  "name": "KlassenKompass PDF Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "ff435c23-1851-4491-8da3-f2cc4ee1070a",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        860,
+        500
+      ],
+      "id": "2d1b9f2e-5a0a-4b8a-9e6e-1f8c4a9b7b1c"
+    },
+    {
+      "parameters": {
+        "message": "text"
+      },
+      "name": "Message a model1",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        500
+      ],
+      "id": "a3c2d1e0-f4b5-4c6d-8e9f-2g7h5i0j1k2l"
+    },
+    {
+      "parameters": {
+        "html": "={{$node['Message a model1'].json.candidates[0].content.parts[0].text}}"
+      },
+      "name": "Markdown",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        500
+      ],
+      "id": "b4d3e2f1-g5h6-4d7e-9f0g-3h8i6j1k2l3m"
+    },
+    {
+      "parameters": {
+        "url": "={{$json.body.url}}",
+        "fileName": "plan.pdf",
+        "options": {}
+      },
+      "name": "PDFCo API1",
+      "type": "n8n-nodes-base.pdfco",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        500
+      ],
+      "id": "c5e4f3g2-h6i7-4e8f-a01h-4i9j7k2l3m4n"
+    },
+    {
+      "parameters": {
+        "to": "={{$json.body.email}}",
+        "subject": "Your Personalized Lesson Plan",
+        "html": "={{$node['Markdown'].json.html}}"
+      },
+      "name": "Send a message",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        500
+      ],
+      "id": "d6f5h4i3-j7k8-4f9b-b12j-5l0m9n2o3p4q"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "PDFCo API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDFCo API1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
