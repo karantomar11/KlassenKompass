@@ -13,4 +13,4 @@ frontend/.DS_Store
 
 # IDE & OS files
 .vscode/
-*.log
+*.log.env
